@@ -1,41 +1,31 @@
 const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-const path = require('path');
-
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
+const http = require('http').createServer(app);
+const { Server } = require('socket.io');
+const io = new Server(http);
 
-const PORT = process.env.PORT || 3000;
+// 📌 Указываем папку с шаблонами
+app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
 
-// Раздаём клиентские файлы
-app.use(express.static('public'));
-app.use(express.static(path.join(__dirname, 'public')));
+// 📌 Отдаём шаблон index.ejs при GET /
+app.get('/', (req, res) => {
+  res.render('index'); // Express ищет views/index.ejs
+});
 
 io.on('connection', (socket) => {
-  console.log('👤 Пользователь подключился');
-
-  socket.on('set username', (username) => {
-    socket.username = username;
-    io.emit('user joined', username);
-  });
+  console.log('🟢 Пользователь подключён');
 
   socket.on('chat message', (msg) => {
-    io.emit('chat message', {
-      username: socket.username,
-      text: msg
-    });
+    io.emit('chat message', msg);
   });
 
   socket.on('disconnect', () => {
-    if (socket.username) {
-      io.emit('user left', socket.username);
-      console.log(`❌ ${socket.username} отключился`);
-    }
+    console.log('🔴 Пользователь отключён');
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`🚀 Сервер запущен на http://localhost:${PORT}`);
+const PORT = 3000;
+http.listen(PORT, () => {
+  console.log(`🚀 Сервер работает на http://localhost:${PORT}`);
 });
