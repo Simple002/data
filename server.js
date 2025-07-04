@@ -1,30 +1,33 @@
-const express = require('express');
-const app = express();
-const http = require('http').createServer(app); // ✅ Добавил http
-const { Server } = require('socket.io');
-const io = new Server(http);
+const express = require("express")
+const app = express()
+require("dotenv").config()
+const connectDB = require('./connect');
+const { default: mongoose } = require("mongoose");
 
-// EJS шаблоны
-app.set('view engine', 'ejs');
-app.set('views', __dirname + '/views');
+connectDB()
+app.set("view engine","ejs")
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.render('index');
-});
+const userSchema = new mongoose.Schema(
+  {
+    "name":String
+  }
+)
+const User = new mongoose.model("User",userSchema);
 
-io.on('connection', (socket) => {
-  console.log('🟢 Пользователь подключён');
+app.get('/',(req,res) =>{
+  res.render("index")
+})
 
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg);
-  });
+app.post('/post', async (req,res)=>{
+  const { name_text } = req.body;
+  const user = User({name:name_text})
 
-  socket.on('disconnect', () => {
-    console.log('🔴 Пользователь отключён');
-  });
-});
+  await user.save()
+  res.send("Сохранено")
+})
 
-const PORT = process.env.PORT || 3000;
-http.listen(PORT, () => {
-  console.log(`🚀 Сервер работает на http://localhost:${PORT}`);
-});
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT,() => console.log("Server start work..."))

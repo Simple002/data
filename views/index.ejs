@@ -1,37 +1,14 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Чат</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
 </head>
 <body>
-  <h1>💬 Чат</h1>
-  <ul id="messages"></ul>
-  <form id="form">
-    <input id="input" autocomplete="off" placeholder="Сообщение..." />
-    <button>Отправить</button>
-  </form>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-    const form = document.getElementById('form');
-    const input = document.getElementById('input');
-    const messages = document.getElementById('messages');
-
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      if (input.value) {
-        socket.emit('chat message', input.value);
-        input.value = '';
-      }
-    });
-
-    socket.on('chat message', function(msg) {
-      const item = document.createElement('li');
-      item.textContent = msg;
-      messages.appendChild(item);
-    });
-  </script>
+    <form action="/post" method="POST">
+        <input type="text" name="name_text" required>
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
