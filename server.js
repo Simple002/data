@@ -1,16 +1,15 @@
 const express = require('express');
 const app = express();
-const http = require('http').createServer(app);
+const http = require('http').createServer(app); // ✅ Добавил http
 const { Server } = require('socket.io');
 const io = new Server(http);
 
-// 📌 Указываем папку с шаблонами
+// EJS шаблоны
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
-// 📌 Отдаём шаблон index.ejs при GET /
 app.get('/', (req, res) => {
-  res.render('index'); // Express ищет views/index.ejs
+  res.render('index');
 });
 
 io.on('connection', (socket) => {
@@ -25,7 +24,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 http.listen(PORT, () => {
   console.log(`🚀 Сервер работает на http://localhost:${PORT}`);
 });
