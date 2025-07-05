@@ -1,21 +1,13 @@
 const express = require("express")
 const app = express()
 require("dotenv").config()
+const connectDB = require('./connect');
 const { default: mongoose } = require("mongoose");
 
-
+connectDB()
 app.set("view engine","ejs")
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-
-
-mongoose.connect(process.env.DATABASE)
-.then(() => console.log('✅ MongoDB connected'))
-.catch((err) => {
-    console.error('❌ MongoDB connection error:', err.message);
-    process.exit(1); // Завершить процесс при ошибке
-});
-
 
 const userSchema = new mongoose.Schema(
     {
