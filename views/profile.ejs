@@ -1,27 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile Document</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+
+    .document {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 40px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1877f2;
+      margin-bottom: 5px;
+    }
+
+    .line {
+      border-top: 2px solid #1877f2;
+      margin-bottom: 30px;
+      width: 60px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .section h2 {
+      color: #444;
+      font-size: 20px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+
+    .section p {
+      font-size: 16px;
+      margin-top: 10px;
+      padding-left: 10px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 12px;
+      background-color: #1877f2;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #166fe5;
+    }
+
+    .logout-btn {
+      background-color: #f02849;
+    }
+
+    .logout-btn:hover {
+      background-color: #d8203d;
+    }
+
+    @media (max-width: 600px) {
+      .document {
+        padding: 25px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .section h2 {
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Hello  <%= name %>!</h1>
-    <button id="logout">Log Out</button>
+  <div class="document">
+    <h1>Profile of <%= name %></h1>
+    <div class="line"></div>
 
-    <script>
-        document.getElementById("logout").addEventListener("click",() => {
-            fetch("/logout",{
-                method:"GET",
-                credentials:"include"
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.logOut_status){
-                    window.location.href = '/login'
-                }
-            })
-        })
-    </script>
+    <div class="section">
+      <h2>Description</h2>
+      <p><%= describe ? describe : "No description yet." %></p>
+    </div>
+
+    <div class="section">
+      <h2>Update Description</h2>
+      <form action="/describe" method="POST">
+        <input type="text" name="des_text" placeholder="Enter a new description..." required />
+        <button type="submit">Save Description</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <h2>Actions</h2>
+      <button id="logout" class="logout-btn">Log Out</button>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("logout").addEventListener("click", () => {
+      fetch("/logout", {
+        method: "GET",
+        credentials: "include"
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.logOut_status) {
+          window.location.href = '/login';
+        }
+      });
+    });
+  </script>
 </body>
 </html>

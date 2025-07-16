@@ -27,6 +27,10 @@ const userSchema = mongoose.Schema(
         password:{
             type:String,
             required:true
+        },
+        describe:{
+            type:String,
+            default: ""
         }
     }
 )
@@ -62,8 +66,9 @@ app.get('/home',async(req,res)=>{
     res.render('home')
 })
 
-app.get('/profile',Auth,(req,res)=>{
-    res.render('profile',{name: req.user.name})
+app.get('/profile',Auth,async(req,res)=>{
+    const user = await User.findOne({name: req.user.name})
+    res.render('profile',{ name:user.name , describe:user.describe })
 })
 
 app.get('/logout',(req,res)=>{
@@ -124,7 +129,13 @@ app.post("/logIn",async (req,res)=>{
     res.redirect('/home')
 })
 
-
+app.post('/describe',Auth,async (req,res)=>{
+    const {des_text} = req.body
+    const find_user = await User.findOne({name: req.user.name})
+    find_user.describe = des_text
+    await find_user.save()
+    res.redirect('/profile')
+})
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log("Server start work..."))
