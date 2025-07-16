@@ -137,5 +137,15 @@ app.post('/describe',Auth,async (req,res)=>{
     res.redirect('/profile')
 })
 
+app.post('/find', Auth, async (req,res)=>{
+    const {find_res} = req.body;
+    try{
+        const user = await User.findOne({name:find_res})
+        res.json({status:true,username:user.name})
+    }catch{
+        res.json({status:false,username:"User not found..."})
+    }
+})
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log("Server start work..."))
